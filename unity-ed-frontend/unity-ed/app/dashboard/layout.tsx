@@ -4,7 +4,7 @@ import Topbar from "../../components/topbar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-[calc(100vh-64px)]"> {/* leaves space for root Navbar above */}
+    <div className="p-1  flex min-h-[calc(100vh-64px)]"> {/* leaves space for root Navbar above */}
       <Sidebar />
 
       <div className="flex-1 flex flex-col bg-gray-100">

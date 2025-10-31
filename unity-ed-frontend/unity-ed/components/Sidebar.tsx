@@ -13,7 +13,7 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 bg-blue-600 text-white flex flex-col p-4">
+    <aside className="w-64 bg-blue-600 rounded-lg text-white flex flex-col p-4 ">
       <h2 className="text-xl font-bold mb-6">UnityEd</h2>
       <nav className="flex flex-col gap-2">
         {links.map((link) => (
