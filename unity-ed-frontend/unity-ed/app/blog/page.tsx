@@ -125,7 +125,7 @@ const BlogPageBanner = () => (
 );
 
 
-// --- 4. MAIN PAGE COMPONENT ---
+// Main page component
 
 const BlogPage = () => {
   return (
@@ -176,4 +176,5 @@ const BlogPage = () => {
 };
 
 export default BlogPage;
+
 
