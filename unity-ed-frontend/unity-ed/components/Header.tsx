@@ -20,7 +20,7 @@ export default function Navbar() {
         </Link>
 
         {/* Center: Nav Links */}
-        <div className="hidden md:flex px-4 py-3 gap-6 text-gray-700 font-medium bg-gray-100 rounded-full">
+        <div className="hidden [&>a:hover]:text-blue-600 md:flex px-4 py-3 gap-6 text-gray-700 font-medium bg-gray-100 rounded-full">
           <Link href="/" className="hover:text-[#316CF4] transition">
             Home
           </Link>
