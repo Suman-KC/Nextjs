@@ -19,11 +19,11 @@ export default function Hero() {
       </div>
 
       <div className="flex justify-end">
-        <div className="w-72 h-72 bg-gray-200 rounded-2xl overflow-hidden">
+        <div className="w-72 h-72 bg-gray-200 rounded-2xl overflow">
           {/* replace src with your image in public/images */}
-          <Image src="/images/hero.png" alt="hero" width={460} height={460} objectFit="cover" />
+          <Image src="/images/hero.png" alt="hero" width={460} height={460} objectFit="overflow" className="scale-130" />
         </div>
       </div>
-    </section>
+    </section> 
   );
 }
