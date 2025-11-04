@@ -1,25 +1,20 @@
-// app/page.tsx
+import React from "react";
 import Hero from "../components/Hero";
-import FeatureCard from "../components/FeatureCard";
+import FeaturesRow from "../components/FeaturesRow";
+import WhyChoose from "../components/WhyChoose";
+import EngagingGameplay from "../components/EngagingGameplay";
+import Testimonials from "../components/Testimonials";
+import CTA from "../components/CTA";
 
-export default function HomePage() {
+export default function Home() {
   return (
-    <main className="p-8 mt-0">
+    <div className="min-h-screen">
       <Hero />
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-        <FeatureCard
-          title="Interactive Learning"
-          description="Engage with interactive lessons powered by UnityEd."
-        />
-        <FeatureCard
-          title="Student Management"
-          description="Track progress and manage student performance easily."
-        />
-        <FeatureCard
-          title="Seamless Communication"
-          description="Stay connected with students and parents."
-        />
-      </section>
-    </main>
+      <FeaturesRow />
+      <WhyChoose />
+      <EngagingGameplay />
+      <Testimonials />
+      <CTA />
+    </div>
   );
 }

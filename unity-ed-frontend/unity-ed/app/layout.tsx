@@ -1,25 +1,19 @@
-// app/layout.tsx
 import "./globals.css";
-import Navbar from "../components/Navbar";
+import React from "react";
+import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export const metadata = {
-  title: "UnityEd",
-  description: "UnityEd frontend",
+  title: "UnityED",
+  description: "Empowering Learning Through Play",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col">
-        {/* ALWAYS show global navbar */}
-        <Navbar />
-
-        {/* children will be either home or the dashboard layout */}
-        <div className="flex-1">
-          {children}
-        </div>
-
+      <body className="bg-white text-slate-900 antialiased">
+        <Header />
+        <main>{children}</main>
         <Footer />
       </body>
     </html>
