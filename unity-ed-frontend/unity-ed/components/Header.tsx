@@ -44,7 +44,7 @@ export default function Navbar() {
           className="flex items-center gap-2 bg-[#316CF4] text-white px-5 py-2 rounded-full font-medium hover:bg-[#2554C7] transition"
         >
           <FaUser className="text-white text-lg" />
-          Login/Register
+          LogIn/Register
         </Link>
       </div>
     </nav>
