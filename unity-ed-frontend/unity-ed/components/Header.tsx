@@ -28,7 +28,7 @@ export default function Navbar() {
             About
           </Link>
           <Link href="/games" className="hover:text-white hover:bg-blue-600 rounded transition">
-            Games
+            Game
           </Link>
           <Link href="/teachers" className="hover:text-white hover:bg-blue-600 rounded transition">
             Teachers
