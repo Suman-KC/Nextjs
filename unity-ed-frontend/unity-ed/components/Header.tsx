@@ -20,20 +20,20 @@ export default function Navbar() {
         </Link>
 
         {/* Center: Nav Links */}
-        <div className="hidden [&>a:hover]:text-blue-600 md:flex px-4 py-3 gap-6 text-gray-700 font-medium bg-gray-100 rounded-full">
-          <Link href="/" className="hover:text-[#316CF4] transition">
+        <div className="hidden md:flex px-4 py-3 gap-6 text-gray-700 font-medium bg-gray-100 rounded-full">
+          <Link href="/" className="hover:text-white hover:bg-blue-600 rounded transition">
             Home
           </Link>
-          <Link href="/about" className="hover:text-[#316CF4] transition">
+          <Link href="/about" className="hover:text-white hover:bg-blue-600 rounded transition">
             About
           </Link>
-          <Link href="/games" className="hover:text-[#316CF4] transition">
+          <Link href="/games" className="hover:text-white hover:bg-blue-600 rounded transition">
             Games
           </Link>
-          <Link href="/teachers" className="hover:text-[#316CF4] transition">
+          <Link href="/teachers" className="hover:text-white hover:bg-blue-600 rounded transition">
             Teachers
           </Link>
-          <Link href="/blog" className="hover:text-[#316CF4] transition">
+          <Link href="/blog" className="hover:text-white hover:bg-blue-600 rounded transition">
             Blog
           </Link>
         </div>
