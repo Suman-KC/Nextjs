@@ -2,8 +2,6 @@
 
 import React from 'react';
 
-// --- 1. DATA STRUCTURES & TYPESCRIPT INTERFACES ---
-
 interface BlogPost {
   id: number;
   title: string;
@@ -13,8 +11,6 @@ interface BlogPost {
   imagePlaceholder: string;
   tags: string[];
 }
-
-// Mock Data
 const mockPosts: BlogPost[] = [
   {
     id: 1,
@@ -45,7 +41,7 @@ const mockPosts: BlogPost[] = [
   },
 ];
 
-// --- 2. REUSABLE COMPONENTS (Building Blocks) ---
+// Reusable components
 
 const BlogCard: React.FC<BlogPost> = ({ title, excerpt, author, date, imagePlaceholder, tags }) => (
   // Blog Post Card
@@ -180,3 +176,4 @@ const BlogPage = () => {
 };
 
 export default BlogPage;
+
