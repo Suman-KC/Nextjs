@@ -47,7 +47,7 @@ const BlogCard: React.FC<BlogPost> = ({ title, excerpt, author, date, imagePlace
   // Blog Post Card
   <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-8 transition-shadow hover:shadow-xl">
     
-    {/* Post Image */}
+    {/* After Image */}
     <img 
       src={imagePlaceholder} 
       alt={title} 
@@ -176,5 +176,6 @@ const BlogPage = () => {
 };
 
 export default BlogPage;
+
 
 
