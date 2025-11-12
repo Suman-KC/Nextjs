@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import DashboardCard from "@/components/DashboardCard";
+import AdminLayoutPage from "@/components/AdminLayout";
 import {
   LayoutDashboard,
   Users,
@@ -14,17 +15,10 @@ import {
   UserCog,
 } from "lucide-react";
 
+
 export default function AdminDashboardPage() {
   const router = useRouter();
   const pathname = usePathname();
-
-  // Sidebar navigation
-  const navItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard/admin" },
-    { icon: Building2, label: "Manage Schools", path: "/dashboard/admin/schools" },
-    { icon: UserCog, label: "Manage Teachers", path: "/dashboard/admin/teachers" },
-    { icon: Settings, label: "Settings", path: "/dashboard/admin/settings" },
-  ];
 
   // Dummy data for class summary
   const classes = [
@@ -36,27 +30,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="flex min-h-screen m-4 bg-gray-50">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r shadow-sm p-4 sticky top-0">
-        <nav className="space-y-2">
-          {navItems.map(({ icon: Icon, label, path }) => {
-            const isActive = pathname === path;
-            return (
-              <Link
-                key={path}
-                href={path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-[#1C4E80] text-white"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                <Icon size={20} />
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
-      </aside>
+     <AdminLayoutPage/>
 
       {/* Main Content */}
       <main className="flex-1 p-8">

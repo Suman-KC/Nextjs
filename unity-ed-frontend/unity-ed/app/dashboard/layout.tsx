@@ -7,12 +7,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-
+ <SessionProviderWrapper>
     <html lang="en">
       <body>
         {/* ✅ Wrap your entire app in AuthProvider */}
-         <SessionProviderWrapper> {children} </SessionProviderWrapper>
+         {children} 
       </body>
-    </html>
+    </html></SessionProviderWrapper>
   );
 }

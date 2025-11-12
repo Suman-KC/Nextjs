@@ -14,6 +14,7 @@ model playerprofile {
   playerprogress    playerprogress[]
   playerscorespanel playerscorespanel[]
   runlocal          runlocal[]
+  students          students[]
 }
 
 model playerprogress {
@@ -99,6 +100,75 @@ model user {
   password   String    @db.VarChar(255)
   role       user_role
   created_at DateTime? @default(now()) @db.DateTime(0)
+  account    account[]
+  session    session[]
+}
+
+model account {
+  id                Int     @id @default(autoincrement())
+  userId            Int
+  type              String? @db.VarChar(255)
+  provider          String? @db.VarChar(255)
+  providerAccountId String? @db.VarChar(255)
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String? @db.VarChar(255)
+  scope             String? @db.VarChar(255)
+  id_token          String? @db.Text
+  session_state     String? @db.VarChar(255)
+  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "account_ibfk_1")
+
+  @@unique([provider, providerAccountId], map: "unique_provider")
+  @@index([userId], map: "userId")
+}
+
+model classes {
+  id           Int        @id @default(autoincrement())
+  school_id    Int
+  class_name   String     @db.VarChar(50)
+  teacher_name String?    @db.VarChar(100)
+  created_at   DateTime?  @default(now()) @db.Timestamp(0)
+  schools      schools    @relation(fields: [school_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "classes_ibfk_1")
+  students     students[]
+
+  @@index([school_id], map: "school_id")
+}
+
+model schools {
+  id             Int        @id @default(autoincrement())
+  name           String     @db.VarChar(100)
+  address        String?    @db.VarChar(255)
+  contact_number String?    @db.VarChar(20)
+  created_at     DateTime?  @default(now()) @db.Timestamp(0)
+  classes        classes[]
+  students       students[]
+}
+
+model session {
+  id           Int       @id @default(autoincrement())
+  sessionToken String?   @unique(map: "sessionToken") @db.VarChar(255)
+  userId       Int?
+  expires      DateTime? @db.DateTime(0)
+  user         user?     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "session_ibfk_1")
+
+  @@index([userId], map: "userId")
+}
+
+model students {
+  id            Int            @id @default(autoincrement())
+  alias         String         @db.VarChar(100)
+  player_id     String?        @db.Char(36)
+  classId       Int?
+  schoolId      Int?
+  createdAt     DateTime?      @default(now()) @db.Timestamp(0)
+  playerprofile playerprofile? @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "students_ibfk_1")
+  classes       classes?       @relation(fields: [classId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "students_ibfk_2")
+  schools       schools?       @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "students_ibfk_3")
+
+  @@index([classId], map: "classId")
+  @@index([player_id], map: "player_id")
+  @@index([schoolId], map: "schoolId")
 }
 
 enum runtraitscoreslocal_trait {
