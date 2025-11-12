@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model playerprofile {
+  player_id         String              @id @db.Char(36)
+  alias             String?             @db.VarChar(50)
+  created_at        DateTime?           @default(now()) @db.DateTime(0)
+  playerprogress    playerprogress[]
+  playerscorespanel playerscorespanel[]
+  runlocal          runlocal[]
+}
+
+model playerprogress {
+  id            Int            @id @default(autoincrement())
+  player_id     String?        @db.Char(36)
+  act_no        Int?
+  scene_code    String?        @db.VarChar(50)
+  checkpoint    String?        @db.VarChar(100)
+  playerprofile playerprofile? @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "playerprogress_ibfk_1")
+
+  @@index([player_id], map: "player_id")
+}
+
+model playerscorespanel {
+  id            Int                      @id @default(autoincrement())
+  player_id     String?                  @db.Char(36)
+  trait         playerscorespanel_trait?
+  score         Int?
+  last_updated  DateTime?                @db.DateTime(0)
+  playerprofile playerprofile?           @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "playerscorespanel_ibfk_1")
+
+  @@index([player_id], map: "player_id")
+}
+
+model runeventslocal {
+  id         Int       @id @default(autoincrement())
+  run_id     String?   @db.Char(36)
+  seq        Int?
+  scene_code String?   @db.VarChar(50)
+  node_id    Int?
+  option_id  Int?
+  decided_at DateTime? @db.DateTime(0)
+  latency_ms Int?
+  runlocal   runlocal? @relation(fields: [run_id], references: [run_id], onDelete: NoAction, onUpdate: NoAction, map: "runeventslocal_ibfk_1")
+
+  @@index([run_id], map: "run_id")
+}
+
+model runlocal {
+  run_id              String                  @id @db.Char(36)
+  player_id           String?                 @db.Char(36)
+  level_or_act        Int?
+  ended_at            DateTime?               @db.DateTime(0)
+  total_score         Int?
+  upload_status       runlocal_upload_status? @default(pending)
+  last_error          String?                 @db.VarChar(200)
+  idempotency_key     String?                 @db.VarChar(50)
+  created_at          DateTime?               @default(now()) @db.DateTime(0)
+  runeventslocal      runeventslocal[]
+  playerprofile       playerprofile?          @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "runlocal_ibfk_1")
+  runtraitscoreslocal runtraitscoreslocal[]
+  uploadqueue         uploadqueue[]
+
+  @@index([player_id], map: "player_id")
+}
+
+model runtraitscoreslocal {
+  id       Int                        @id @default(autoincrement())
+  run_id   String?                    @db.Char(36)
+  trait    runtraitscoreslocal_trait?
+  score    Int?
+  runlocal runlocal?                  @relation(fields: [run_id], references: [run_id], onDelete: NoAction, onUpdate: NoAction, map: "runtraitscoreslocal_ibfk_1")
+
+  @@index([run_id], map: "run_id")
+}
+
+model uploadqueue {
+  queue_id     Int                 @id @default(autoincrement())
+  run_id       String?             @db.Char(36)
+  payload_json Json?
+  status       uploadqueue_status? @default(queued)
+  retry_count  Int?                @default(0)
+  last_error   String?             @db.VarChar(200)
+  created_at   DateTime?           @default(now()) @db.DateTime(0)
+  runlocal     runlocal?           @relation(fields: [run_id], references: [run_id], onDelete: NoAction, onUpdate: NoAction, map: "uploadqueue_ibfk_1")
+
+  @@index([run_id], map: "run_id")
+}
+
+model user {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique(map: "email") @db.VarChar(100)
+  password   String    @db.VarChar(255)
+  role       user_role
+  created_at DateTime? @default(now()) @db.DateTime(0)
+}
+
+enum runtraitscoreslocal_trait {
+  Rapport
+  Reputation
+  Stress
+}
+
+enum playerscorespanel_trait {
+  Rapport
+  Reputation
+  Stress
+}
+
+enum uploadqueue_status {
+  queued
+  uploaded
+  failed
+}
+
+enum user_role {
+  ADMIN
+  TEACHER
+}
+
+enum runlocal_upload_status {
+  pending
+  uploaded
+}

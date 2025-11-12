@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import {
   LayoutDashboard,
   Users,
@@ -18,61 +19,75 @@ import {
   Trophy,
   TrendingUp,
 } from "lucide-react";
-import { useAuth } from "./contexts/AuthContext"; // adjust if your context path differs
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
 
-  const { user, logout } = useAuth();
+  const user = session?.user;
+
+  useEffect(() => {
+    if (status === "loading") return;
+    if (!session) {
+      router.push("/login");
+    }
+  }, [status, session, router]);
 
   // --- Navigation items per role ---
   const adminNavItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/admin" },
-    { icon: Building2, label: "Manage Schools", path: "/admin/schools" },
-    { icon: UserCog, label: "Manage Teachers", path: "/admin/teachers" },
-    { icon: Settings, label: "Settings", path: "/dashboard/settings" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard/admin" },
+    { icon: Building2, label: "Manage Schools", path: "/dashboard/admin/schools" },
+    { icon: UserCog, label: "Manage Teachers", path: "/dashboard/admin/teachers" },
+    { icon: Settings, label: "Settings", path: "/dashboard/admin/settings" },
   ];
 
   const teacherNavItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard" },
-    { icon: Users, label: "My Classes", path: "/dashboard/classes" },
-    { icon: FileText, label: "Student Data", path: "/dashboard/students" },
-    { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
-    { icon: Gamepad2, label: "Game Control", path: "/dashboard/game-control" },
-    { icon: Settings, label: "Settings", path: "/dashboard/settings" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard/teacher" },
+    { icon: Users, label: "My Classes", path: "/dashboard/teacher/classes" },
+    { icon: FileText, label: "Student Data", path: "/dashboard/teacher/students" },
+    { icon: BarChart3, label: "Analytics", path: "/dashboard/teacher/analytics" },
+    { icon: Gamepad2, label: "Game Control", path: "/dashboard/teacher/game-control" },
+    { icon: Settings, label: "Settings", path: "/dashboard/teacher/settings" },
   ];
 
   const studentNavItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/student" },
-    { icon: Gamepad2, label: "My Games", path: "/student/games" },
-    { icon: TrendingUp, label: "My Progress", path: "/student/progress" },
-    { icon: Trophy, label: "Achievements", path: "/student/achievements" },
-    { icon: Settings, label: "Settings", path: "/dashboard/settings" },
+    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard/student" },
+    { icon: Gamepad2, label: "My Games", path: "/dashboard/student/games" },
+    { icon: TrendingUp, label: "My Progress", path: "/dashboard/student/progress" },
+    { icon: Trophy, label: "Achievements", path: "/dashboard/student/achievements" },
+    { icon: Settings, label: "Settings", path: "/dashboard/student/settings" },
   ];
 
-  const navItems =
-    user?.role === "admin"
-      ? adminNavItems
-      : user?.role === "student"
-      ? studentNavItems
-      : teacherNavItems;
+  // --- Determine nav items based on role ---
+  let navItems = [];
+  if (user?.role === "ADMIN") navItems = adminNavItems;
+  else if (user?.role === "TEACHER") navItems = teacherNavItems;
+  else if (user?.role === "STUDENT") navItems = studentNavItems;
 
   // --- Handlers ---
   const handleLogout = () => {
-    logout();
-    router.push("/login");
+    signOut({ callbackUrl: "/login" });
   };
 
   const getHomeLink = () => {
-    if (user?.role === "admin") return "/admin";
-    if (user?.role === "student") return "/student";
-    return "/dashboard";
+    if (user?.role === "ADMIN") return "/dashboard/admin";
+    if (user?.role === "TEACHER") return "/dashboard/teacher";
+    if (user?.role === "STUDENT") return "/dashboard/student";
+    return "/";
   };
+
+  if (status === "loading") {
+    return <div className="p-10 text-center text-gray-500">Loading session...</div>;
+  }
+
+  if (!session) {
+    return null; // Redirect handled by useEffect
+  }
 
   // --- Render ---
   return (
@@ -89,14 +104,10 @@ export default function DashboardLayout({
             <div className="flex items-center gap-4">
               <div className="text-right mr-4">
                 <div className="font-semibold text-[#1C4E80]">
-                  {user?.name || "Guest"}
+                  {user?.email || "Guest"}
                 </div>
-                <div className="text-sm text-gray-600">
-                  {user?.role === "student" ? (
-                    user?.className
-                  ) : (
-                    <span className="capitalize">{user?.role || "Role"}</span>
-                  )}
+                <div className="text-sm text-gray-600 capitalize">
+                  {user?.role?.toLowerCase() || "Role"}
                 </div>
               </div>
               <button className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-gray-300 transition-colors">
