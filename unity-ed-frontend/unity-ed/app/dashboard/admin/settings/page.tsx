@@ -5,13 +5,13 @@ export default function AdminSettingsPage() {
       <div className="flex min-h-screen m-4 bg-gray-50">
           {/* Sidebar */}
          <AdminLayoutPage/>
-    <div className="p-8">
+    <div className="w-full p-5">
       <h1 className="text-2xl font-bold text-[#143E73] mb-4">Settings</h1>
       <p className="text-gray-600 mb-6">
         Manage your account and system configurations here.
       </p>
 
-      <div className="bg-white shadow-md rounded-lg p-6 max-w-lg">
+      <div className="w-full bg-white shadow-md rounded-lg p-6 max-w-lg">
         <form className="space-y-4">
           <div>
             <label className="block text-gray-700 font-medium mb-1">

@@ -5,7 +5,7 @@ export default function ManageTeachersPage() {
       <div className="flex min-h-screen m-4 bg-gray-50">
          {/* Sidebar */}
          <AdminLayoutPage/>
-    <div className="p-5 justify-content-center items-center">
+    <div className="w-full p-5 justify-content-center items-center">
       <h1 className="text-2xl font-bold text-[#143E73] mb-4">
         Manage Teachers
       </h1>

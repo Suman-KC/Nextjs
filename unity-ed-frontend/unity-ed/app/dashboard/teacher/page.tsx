@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import TeacherLayout from "@/components/TeacherLayout";
 import {
   LayoutDashboard,
   Users,
@@ -27,35 +28,8 @@ export default function TeacherDashboardPage() {
 
   return (
     <div className="min-h-screen w-full bg-[#F8FAFC] flex">
-      {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-sm min-h-screen">
-        <div className="p-6 border-b">
-          <h1 className="text-2xl font-bold text-[#1C4E80]">UnityED</h1>
-          <p className="text-sm text-gray-500 mt-1">Teacher Panel</p>
-        </div>
-
-        <nav className="p-4 space-y-2">
-          {teacherNavItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                href={item.path}
-                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  isActive
-                    ? "bg-[#1C4E80] text-white"
-                    : "text-gray-700 hover:bg-gray-100"
-                }`}
-              >
-                <Icon size={20} />
-                <span className="font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-      </aside>
-
+            
+                  <TeacherLayout/>
       {/* Main Content */}
       <main className="flex-1 p-8 overflow-y-auto">
         <h1 className="text-3xl font-bold text-[#1C4E80] mb-8">
