@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 // GET all classes
 export async function GET() {
   const teacherId = 1;
-  const classes = await prisma..findMany({ where: { teacherId } });
+  const classes = await prisma.classes.findMany({ where: { teacherId } });
   return NextResponse.json(classes);
 }
 
@@ -13,7 +13,7 @@ export async function GET() {
 export async function POST(req: Request) {
   const { className, section, schoolId } = await req.json();
   const teacherId = 1;
-  const newClass = await prisma.class.create({
+  const newClass = await prisma.classes.create({
     data: { className, section, schoolId, teacherId },
   });
   return NextResponse.json(newClass);
