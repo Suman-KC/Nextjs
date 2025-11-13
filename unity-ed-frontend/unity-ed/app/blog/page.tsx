@@ -47,7 +47,7 @@ const BlogCard: React.FC<BlogPost> = ({ title, excerpt, author, date, imagePlace
   // Blog Post Card
   <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-8 transition-shadow hover:shadow-xl">
     
-    {/* Post Image */}
+    {/* After Image */}
     <img 
       src={imagePlaceholder} 
       alt={title} 
@@ -114,7 +114,7 @@ const NewsletterSignupCard = () => (
   </div>
 );
 
-// The Blog Headline/Hero Section (Not a header)
+// The Blog Headline
 const BlogPageBanner = () => (
     <section className="bg-white py-16 border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-8">
@@ -176,5 +176,7 @@ const BlogPage = () => {
 };
 
 export default BlogPage;
+
+
 
 
