@@ -17,6 +17,7 @@ const authOptions = {
         if (!credentials.email || !credentials.password) {
           throw new Error("Missing email or password");
         }
+        console.log("authorize called--")
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },

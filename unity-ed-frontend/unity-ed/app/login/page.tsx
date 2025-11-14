@@ -7,6 +7,7 @@ import { Mail, Lock, User } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
+  const [error,setError] = useState<string |  null>(null)
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("STUDENT"); // default role
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function LoginPage() {
       password,
       role,
     });
+    console.log("res",res)  
 
     if (res?.ok) {
       const sessionRes = await fetch("/api/auth/session");
@@ -30,7 +32,11 @@ export default function LoginPage() {
       else if (userRole === "TEACHER") router.push("/dashboard/teacher");
       else router.push("/dashboard/student");
     } else {
-      alert("Invalid credentials or role");
+      if(res?.error){
+        setError(res.error)
+
+      }
+      // alert("Invalid credentials or role");
     }
   };
 
@@ -46,6 +52,7 @@ export default function LoginPage() {
         <p className="text-center text-white-700 mb-4 text-sm">
           Choose your role and sign in to continue
         </p>
+        {error && <h1 style= {{backgroundColor:'red'}}>{error}</h1>}
 
         {/* Role Selection */}
         <div>

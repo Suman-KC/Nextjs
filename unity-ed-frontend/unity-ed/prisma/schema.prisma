@@ -7,194 +7,244 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model playerprofile {
-  player_id         String              @id @db.Char(36)
-  alias             String?             @db.VarChar(50)
-  created_at        DateTime?           @default(now()) @db.DateTime(0)
-  playerprogress    playerprogress[]
-  playerscorespanel playerscorespanel[]
-  runlocal          runlocal[]
-  students          students[]
+/* ===========================
+   PLAYER / RUN LOCAL MODELS
+=========================== */
+
+model PlayerProfile {
+  playerId         String               @id @map("player_id") @db.Char(36)
+  alias            String?              @db.VarChar(50)
+  createdAt        DateTime?            @default(now()) @map("created_at") @db.DateTime(0)
+
+  playerProgress   PlayerProgress[]
+  playerScores     PlayerScoresPanel[]
+  runLocal         RunLocal[]
+  students         Student[]
+
+  @@map("playerprofile")
 }
 
-model playerprogress {
-  id            Int            @id @default(autoincrement())
-  player_id     String?        @db.Char(36)
-  act_no        Int?
-  scene_code    String?        @db.VarChar(50)
-  checkpoint    String?        @db.VarChar(100)
-  playerprofile playerprofile? @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "playerprogress_ibfk_1")
+model PlayerProgress {
+  id          Int            @id @default(autoincrement())
+  playerId    String?        @map("player_id") @db.Char(36)
+  actNo       Int?           @map("act_no")
+  sceneCode   String?        @map("scene_code") @db.VarChar(50)
+  checkpoint  String?        @db.VarChar(100)
 
-  @@index([player_id], map: "player_id")
+  playerProfile PlayerProfile? @relation(fields: [playerId], references: [playerId], map: "playerprogress_ibfk_1")
+
+  @@index([playerId], map: "player_id")
+  @@map("playerprogress")
 }
 
-model playerscorespanel {
-  id            Int                      @id @default(autoincrement())
-  player_id     String?                  @db.Char(36)
-  trait         playerscorespanel_trait?
+model PlayerScoresPanel {
+  id            Int                     @id @default(autoincrement())
+  playerId      String?                 @map("player_id") @db.Char(36)
+  trait         PlayerScoresPanelTrait?
   score         Int?
-  last_updated  DateTime?                @db.DateTime(0)
-  playerprofile playerprofile?           @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "playerscorespanel_ibfk_1")
+  lastUpdated   DateTime?               @map("last_updated") @db.DateTime(0)
 
-  @@index([player_id], map: "player_id")
+  playerProfile PlayerProfile? @relation(fields: [playerId], references: [playerId], map: "playerscorespanel_ibfk_1")
+
+  @@index([playerId], map: "player_id")
+  @@map("playerscorespanel")
 }
 
-model runeventslocal {
+model RunEventsLocal {
   id         Int       @id @default(autoincrement())
-  run_id     String?   @db.Char(36)
+  runId      String?   @map("run_id") @db.Char(36)
   seq        Int?
-  scene_code String?   @db.VarChar(50)
-  node_id    Int?
-  option_id  Int?
-  decided_at DateTime? @db.DateTime(0)
-  latency_ms Int?
-  runlocal   runlocal? @relation(fields: [run_id], references: [run_id], onDelete: NoAction, onUpdate: NoAction, map: "runeventslocal_ibfk_1")
+  sceneCode  String?   @map("scene_code") @db.VarChar(50)
+  nodeId     Int?      @map("node_id")
+  optionId   Int?      @map("option_id")
+  decidedAt  DateTime? @map("decided_at") @db.DateTime(0)
+  latencyMs  Int?      @map("latency_ms")
 
-  @@index([run_id], map: "run_id")
+  runLocal   RunLocal? @relation(fields: [runId], references: [runId], map: "runeventslocal_ibfk_1")
+
+  @@index([runId], map: "run_id")
+  @@map("runeventslocal")
 }
 
-model runlocal {
-  run_id              String                  @id @db.Char(36)
-  player_id           String?                 @db.Char(36)
-  level_or_act        Int?
-  ended_at            DateTime?               @db.DateTime(0)
-  total_score         Int?
-  upload_status       runlocal_upload_status? @default(pending)
-  last_error          String?                 @db.VarChar(200)
-  idempotency_key     String?                 @db.VarChar(50)
-  created_at          DateTime?               @default(now()) @db.DateTime(0)
-  runeventslocal      runeventslocal[]
-  playerprofile       playerprofile?          @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "runlocal_ibfk_1")
-  runtraitscoreslocal runtraitscoreslocal[]
-  uploadqueue         uploadqueue[]
+model RunLocal {
+  runId            String                 @id @map("run_id") @db.Char(36)
+  playerId         String?                @map("player_id") @db.Char(36)
+  levelOrAct       Int?                   @map("level_or_act")
+  endedAt          DateTime?              @map("ended_at") @db.DateTime(0)
+  totalScore       Int?                   @map("total_score")
+  uploadStatus     RunLocalUploadStatus   @default(pending) @map("upload_status")
+  lastError        String?                @map("last_error") @db.VarChar(200)
+  idempotencyKey   String?                @map("idempotency_key") @db.VarChar(50)
+  createdAt        DateTime?              @default(now()) @map("created_at") @db.DateTime(0)
 
-  @@index([player_id], map: "player_id")
+  runEventsLocal   RunEventsLocal[]
+  playerProfile    PlayerProfile? @relation(fields: [playerId], references: [playerId], map: "runlocal_ibfk_1")
+  runTraitScores   RunTraitScoresLocal[]
+  uploadQueue      UploadQueue[]
+
+  @@index([playerId], map: "player_id")
+  @@map("runlocal")
 }
 
-model runtraitscoreslocal {
-  id       Int                        @id @default(autoincrement())
-  run_id   String?                    @db.Char(36)
-  trait    runtraitscoreslocal_trait?
+model RunTraitScoresLocal {
+  id       Int                       @id @default(autoincrement())
+  runId    String?                   @map("run_id") @db.Char(36)
+  trait    RunTraitScoresLocalTrait?
   score    Int?
-  runlocal runlocal?                  @relation(fields: [run_id], references: [run_id], onDelete: NoAction, onUpdate: NoAction, map: "runtraitscoreslocal_ibfk_1")
 
-  @@index([run_id], map: "run_id")
+  runLocal RunLocal? @relation(fields: [runId], references: [runId], map: "runtraitscoreslocal_ibfk_1")
+
+  @@index([runId], map: "run_id")
+  @@map("runtraitscoreslocal")
 }
 
-model uploadqueue {
-  queue_id     Int                 @id @default(autoincrement())
-  run_id       String?             @db.Char(36)
-  payload_json Json?
-  status       uploadqueue_status? @default(queued)
-  retry_count  Int?                @default(0)
-  last_error   String?             @db.VarChar(200)
-  created_at   DateTime?           @default(now()) @db.DateTime(0)
-  runlocal     runlocal?           @relation(fields: [run_id], references: [run_id], onDelete: NoAction, onUpdate: NoAction, map: "uploadqueue_ibfk_1")
+model UploadQueue {
+  queueId     Int                  @id @default(autoincrement()) @map("queue_id")
+  runId       String?              @map("run_id") @db.Char(36)
+  payloadJson Json?                @map("payload_json")
+  status      UploadQueueStatus?   @default(queued)
+  retryCount  Int?                 @default(0) @map("retry_count")
+  lastError   String?              @map("last_error") @db.VarChar(200)
+  createdAt   DateTime?            @default(now()) @map("created_at") @db.DateTime(0)
 
-  @@index([run_id], map: "run_id")
+  runLocal    RunLocal? @relation(fields: [runId], references: [runId], map: "uploadqueue_ibfk_1")
+
+  @@index([runId], map: "run_id")
+  @@map("uploadqueue")
 }
 
-model user {
+/* ===========================
+        AUTH MODELS
+=========================== */
+
+model User {
   id         Int       @id @default(autoincrement())
   email      String    @unique(map: "email") @db.VarChar(100)
   password   String    @db.VarChar(255)
-  role       user_role
-  created_at DateTime? @default(now()) @db.DateTime(0)
-  account    account[]
-  session    session[]
+  role       UserRole
+  createdAt  DateTime? @default(now()) @map("created_at") @db.DateTime(0)
+
+  account        Account[]
+  session        Session[]
+  taughtStudents Student[] @relation("TeacherStudents")
+
+  @@map("user")
 }
 
-model account {
+model Account {
   id                Int     @id @default(autoincrement())
-  userId            Int
+  userId            Int     @map("userId")
   type              String? @db.VarChar(255)
   provider          String? @db.VarChar(255)
-  providerAccountId String? @db.VarChar(255)
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String? @db.VarChar(255)
+  providerAccountId String? @map("providerAccountId") @db.VarChar(255)
+  refreshToken      String? @map("refresh_token") @db.Text
+  accessToken       String? @map("access_token") @db.Text
+  expiresAt         Int?    @map("expires_at")
+  tokenType         String? @map("token_type") @db.VarChar(255)
   scope             String? @db.VarChar(255)
-  id_token          String? @db.Text
-  session_state     String? @db.VarChar(255)
-  user              user    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "account_ibfk_1")
+  idToken           String? @map("id_token") @db.Text
+  sessionState      String? @map("session_state") @db.VarChar(255)
+
+  user              User @relation(fields: [userId], references: [id], map: "account_ibfk_1")
 
   @@unique([provider, providerAccountId], map: "unique_provider")
   @@index([userId], map: "userId")
+  @@map("account")
 }
 
-model classes {
-  id           Int        @id @default(autoincrement())
-  school_id    Int
-  class_name   String     @db.VarChar(50)
-  teacher_name String?    @db.VarChar(100)
-  created_at   DateTime?  @default(now()) @db.Timestamp(0)
-  schools      schools    @relation(fields: [school_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "classes_ibfk_1")
-  students     students[]
-
-  @@index([school_id], map: "school_id")
-}
-
-model schools {
-  id             Int        @id @default(autoincrement())
-  name           String     @db.VarChar(100)
-  address        String?    @db.VarChar(255)
-  contact_number String?    @db.VarChar(20)
-  created_at     DateTime?  @default(now()) @db.Timestamp(0)
-  classes        classes[]
-  students       students[]
-}
-
-model session {
+model Session {
   id           Int       @id @default(autoincrement())
   sessionToken String?   @unique(map: "sessionToken") @db.VarChar(255)
-  userId       Int?
+  userId       Int?      @map("userId")
   expires      DateTime? @db.DateTime(0)
-  user         user?     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "session_ibfk_1")
+
+  user         User?     @relation(fields: [userId], references: [id], map: "session_ibfk_1")
 
   @@index([userId], map: "userId")
+  @@map("session")
 }
 
-model students {
-  id            Int            @id @default(autoincrement())
-  alias         String         @db.VarChar(100)
-  player_id     String?        @db.Char(36)
-  classId       Int?
-  schoolId      Int?
-  createdAt     DateTime?      @default(now()) @db.Timestamp(0)
-  playerprofile playerprofile? @relation(fields: [player_id], references: [player_id], onDelete: NoAction, onUpdate: NoAction, map: "students_ibfk_1")
-  classes       classes?       @relation(fields: [classId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "students_ibfk_2")
-  schools       schools?       @relation(fields: [schoolId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "students_ibfk_3")
+/* ===========================
+      SCHOOL / CLASS / STUDENT
+=========================== */
+
+model School {
+  id            Int        @id @default(autoincrement())
+  name          String     @db.VarChar(100)
+  address       String?    @db.VarChar(255)
+  contactNumber String?    @map("contact_number") @db.VarChar(20)
+  createdAt     DateTime?  @default(now()) @map("created_at") @db.Timestamp(0)
+
+  classes  Class[]
+  students Student[]
+
+  @@map("schools")
+}
+
+model Class {
+  id         Int        @id @default(autoincrement())
+  schoolId   Int        @map("school_id")
+  className  String     @map("class_name") @db.VarChar(50)
+  teacherName String?   @map("teacher_name") @db.VarChar(100)
+  createdAt  DateTime?  @default(now()) @map("created_at") @db.Timestamp(0)
+
+  school    School     @relation(fields: [schoolId], references: [id], map: "classes_ibfk_1")
+  students  Student[]
+
+  @@index([schoolId], map: "school_id")
+  @@map("classes")
+}
+
+model Student {
+  id        Int       @id @default(autoincrement())
+  alias     String    @db.VarChar(100)
+  playerId  String?   @map("player_id") @db.Char(36)
+  classId   Int?      @map("class_id")
+  schoolId  Int?      @map("school_id")
+  teacherId Int?      @map("teacher_id")
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(0)
+
+  playerProfile PlayerProfile? @relation(fields: [playerId], references: [playerId], map: "students_ibfk_1")
+  class         Class?         @relation(fields: [classId], references: [id], map: "students_ibfk_2")
+  school        School?        @relation(fields: [schoolId], references: [id], map: "students_ibfk_3")
+
+  teacher       User?          @relation("TeacherStudents", fields: [teacherId], references: [id], map: "students_ibfk_4")
 
   @@index([classId], map: "classId")
-  @@index([player_id], map: "player_id")
+  @@index([playerId], map: "player_id")
   @@index([schoolId], map: "schoolId")
+  @@index([teacherId], map: "teacherId")
+  @@map("students")
 }
 
-enum runtraitscoreslocal_trait {
+/* ===========================
+            ENUMS
+=========================== */
+
+enum RunTraitScoresLocalTrait {
   Rapport
   Reputation
   Stress
 }
 
-enum playerscorespanel_trait {
+enum PlayerScoresPanelTrait {
   Rapport
   Reputation
   Stress
 }
 
-enum uploadqueue_status {
+enum UploadQueueStatus {
   queued
   uploaded
   failed
 }
 
-enum user_role {
+enum UserRole {
   ADMIN
   TEACHER
 }
 
-enum runlocal_upload_status {
+enum RunLocalUploadStatus {
   pending
   uploaded
 }

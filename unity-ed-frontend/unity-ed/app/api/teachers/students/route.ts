@@ -4,6 +4,6 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   const classId = 1;
-  const student = await prisma.students.findMany({ where: { classId} });
+  const student = await prisma.student.findMany({ where: { classId} });
   return NextResponse.json(student);
 }
