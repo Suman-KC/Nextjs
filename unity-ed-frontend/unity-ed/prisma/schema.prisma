@@ -242,6 +242,7 @@ enum UploadQueueStatus {
 enum UserRole {
   ADMIN
   TEACHER
+  STUDENT
 }
 
 enum RunLocalUploadStatus {

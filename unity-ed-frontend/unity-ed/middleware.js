@@ -37,5 +37,9 @@ export async function middleware(req) {
 
 // Limit middleware scope for better performance
 export const config = {
-  matcher: ["/dashboard/:path*", "/admin/:path*", "/teacher/:path*"],
+  matcher: [
+    "/dashboard/:path*", 
+    "/admin/:path*", 
+    "/teacher/:path*",
+  ],
 };

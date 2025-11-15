@@ -1,8 +1,6 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import TeacherLayout from "@/components/TeacherLayout";
 import {
   LayoutDashboard,
@@ -14,23 +12,28 @@ import {
 } from "lucide-react";
 
 export default function TeacherDashboardPage() {
-  const pathname = usePathname();
+  const [stats, setStats] = useState({
+    totalClasses: 0,
+    totalStudents: 0,
+  });
 
-  // --- Sidebar Navigation Items ---
-  const teacherNavItems = [
-    { icon: LayoutDashboard, label: "Dashboard", path: "/dashboard/teacher" },
-    { icon: Users, label: "My Classes", path: "/dashboard/teacher/classes" },
-    { icon: FileText, label: "Student Data", path: "/dashboard/teacher/students" },
-    { icon: BarChart3, label: "Analytics", path: "/dashboard/teacher/analytics" },
-    { icon: Gamepad2, label: "Game Control", path: "/dashboard/teacher/game-control" },
-    { icon: Settings, label: "Settings", path: "/dashboard/teacher/settings" },
-  ];
+  useEffect(() => {
+    async function loadStats() {
+      try {
+        const res = await fetch("/api/dashboard/stats");
+        const data = await res.json();
+        setStats(data);
+      } catch (error) {
+        console.log("Error fetching stats:", error);
+      }
+    }
+    loadStats();
+  }, []);
 
   return (
     <div className="min-h-screen w-full bg-[#F8FAFC] flex">
-            
-                  <TeacherLayout/>
-      {/* Main Content */}
+      <TeacherLayout />
+
       <main className="flex-1 p-8 overflow-y-auto">
         <h1 className="text-3xl font-bold text-[#1C4E80] mb-8">
           Welcome, Teacher 👋
@@ -45,7 +48,9 @@ export default function TeacherDashboardPage() {
               </div>
               <div>
                 <p className="text-gray-600">Total Classes</p>
-                <h2 className="text-2xl font-bold text-[#1C4E80]">12</h2>
+                <h2 className="text-2xl font-bold text-[#1C4E80]">
+                  {stats.totalClasses}
+                </h2>
               </div>
             </div>
           </div>
@@ -58,7 +63,9 @@ export default function TeacherDashboardPage() {
               </div>
               <div>
                 <p className="text-gray-600">Students Enrolled</p>
-                <h2 className="text-2xl font-bold text-green-700">240</h2>
+                <h2 className="text-2xl font-bold text-green-700">
+                  {stats.totalStudents}
+                </h2>
               </div>
             </div>
           </div>

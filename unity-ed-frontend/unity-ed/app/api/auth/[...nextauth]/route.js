@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-const authOptions = {
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
